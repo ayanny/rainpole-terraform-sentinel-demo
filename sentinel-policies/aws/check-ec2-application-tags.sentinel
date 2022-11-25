@@ -1,0 +1,34 @@
+## This policy uses the Sentinel tfplan/v2 import to require that
+# all EC2 instances have the Application key in the tags attribute
+# and that it has a value from an allowed list
+
+# Import common-functions/tfplan-functions/tfplan-functions.sentinel
+# with alias "plan"
+import "tfplan-functions" as plan
+
+# Define mandatory tags
+mandatory_tags = ["Application"]
+
+# Allowed Applications
+allowed_applications = ["web", "api", "cache", "pay", "data"]
+
+# Get all EC2 instances
+allEC2Instances = plan.find_resources("aws_instance")
+
+# Filter to EC2 instances that are missing the Application tag
+# Warnings will be printed for all violations since the last parameter is true
+EC2InstancesWithoutApplicationTag = plan.filter_attribute_not_contains_list(allEC2Instances,
+	"tags", mandatory_tags, true)
+
+# Filter to EC2 instances that have the Application tag with an invalid value
+# Warnings will be printed for all violations since the last parameter is true
+EC2InstancesWithInvalidApplicationTag = plan.filter_attribute_map_key_contains_items_not_in_list(allEC2Instances,
+	"tags", "Application", allowed_applications, true)
+
+# Count violations
+tag_violations = length(EC2InstancesWithoutApplicationTag["messages"]) + length(EC2InstancesWithInvalidApplicationTag["messages"])
+
+# Main rule
+main = rule {
+	tag_violations is 0
+}

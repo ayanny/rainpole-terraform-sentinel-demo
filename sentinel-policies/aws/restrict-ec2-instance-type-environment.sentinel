@@ -1,0 +1,62 @@
+# This policy uses the Sentinel tfplan/v2 import to require that
+# all EC2 instances have instance types from an allowed list based on their
+# Environment tag value
+
+# Import common-functions/tfplan-functions/tfplan-functions.sentinel
+# with alias "plan"
+import "tfplan-functions" as plan
+
+# Allowed EC2 Instance Types
+# Include "null" to allow missing or computed values
+allowed_prod_types = ["t2.small", "t2.medium", "t3.small", "t3.medium", "t3.large"]
+allowed_dev_types = ["t2.micro", "t2.small", "t2.medium", "t3.medium"]
+
+# Get all EC2 instances
+allEC2Instances = plan.find_resources("aws_instance")
+
+# Search filtered results from resources for any EC2 instances with a tag of Environment/prod
+ProdTagChanges = plan.filter_attribute_map_key_contains_items_in_list(allEC2Instances,
+	"tags", "Environment", "prod", true)
+
+# Search filtered results from resources for any EC2 instances with a tag of Environment/dev
+DevTagChanges = plan.filter_attribute_map_key_contains_items_in_list(allEC2Instances,
+	"tags", "Environment", "dev", true)
+
+# Search filtered results from resources for any EC2 instances with a tag_all of Environment/prod
+ProdTagAllChanges = plan.filter_attribute_map_key_contains_items_in_list(allEC2Instances,
+	"tags_all", "Environment", "prod", true)
+
+# Search filtered results from resources for any EC2 instances with a tag_all of Environment/dev
+DevTagAllChanges = plan.filter_attribute_map_key_contains_items_in_list(allEC2Instances,
+	"tags_all", "Environment", "dev", true)
+
+# Determine if EC2 instances with Environment tag "prod" use the allowed defined instance types
+ProdEC2InstancesWithInvalidTypeTag = plan.filter_attribute_not_in_list(ProdTagChanges["resources"],
+	"instance_type", allowed_prod_types, true)
+
+# Determine if EC2 instances with Environment tag "dev" use the allowed defined instance types
+DevEC2InstancesWithInvalidTypeTag = plan.filter_attribute_not_in_list(DevTagChanges["resources"],
+	"instance_type", allowed_dev_types, true)
+
+# Determine if EC2 instances with Environment tag_all "dev" use the allowed defined instance types
+ProdEC2InstancesWithInvalidTypeTagAll = plan.filter_attribute_not_in_list(ProdTagAllChanges["resources"],
+	"instance_type", allowed_prod_types, true)
+
+# Determine if EC2 instances with Environment tag_all "dev" use the allowed defined instance types
+DevEC2InstancesWithInvalidTypeTagAll = plan.filter_attribute_not_in_list(DevTagAllChanges["resources"],
+	"instance_type", allowed_dev_types, true)
+
+#Total violations
+prodtagviolations = length(ProdEC2InstancesWithInvalidTypeTag["messages"])
+prodtagallviolations = length(ProdEC2InstancesWithInvalidTypeTagAll["messages"])
+devtagviolations = length(DevEC2InstancesWithInvalidTypeTagAll["messages"])
+devtagallviolations = length(DevEC2InstancesWithInvalidTypeTagAll["messages"])
+
+#Rules to evaluate violations
+prodviolations = rule { prodtagviolations is 0 or prodtagallviolations is 0 }
+devviolations = rule { devtagviolations is 0 or devtagallviolations is 0 }
+
+# Main rule
+main = rule {
+	prodviolations and devviolations
+}

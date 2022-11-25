@@ -1,0 +1,39 @@
+## This policy uses the standard import time to restrict infrastructure
+# changes to off-peak hours 1am - 9am UTC
+import "time"
+import "tfplan-functions" as plan
+import "tfplan/v2" as tfplan
+
+# Get current time. This outputs a map that can be referenced with
+# time.now.hour/minute/second etc.
+current_time = time.now.hour
+
+# Define environment tag that the rule should apply to
+environment_tag_value = "production"
+
+# Defines restricted deployment hours in UTC
+restricted_times = current_time >= 9 or current_time <= 1
+
+# Filter for all changes in the plan. Does not filter for no operation or reads.
+resources = filter tfplan.resource_changes as address, rc {
+	rc.mode is "managed" and
+		(rc.change.actions contains "create" or rc.change.actions contains "update" or rc.change.actions contains "delete")
+}
+
+# Search filtered results from resources for all objects with a tag of Environment/prod
+ProductionChangesTags = plan.filter_attribute_map_key_contains_items_in_list(resources,
+	"tags", "Environment", environment_tag_value, true)
+
+# Search filtered results from resources for all objects with a tag_all of Environment/prod
+ProductionChangesTagsAll = plan.filter_attribute_map_key_contains_items_in_list(resources,
+	"tags_all", "Environment", environment_tag_value, true)
+
+# Identify if there are production changes happening from two tags and tags_all
+detected_changes_tags = length(ProductionChangesTags["messages"])
+detected_changes_tagsall = length(ProductionChangesTagsAll["messages"])
+
+#Consolidate previous change detection identifiers to determine if there are any changes to production
+production_changes = rule { detected_changes_tags == 0 and detected_changes_tagsall == 0 }
+
+#Main Rule
+main = rule when restricted_times { production_changes }
