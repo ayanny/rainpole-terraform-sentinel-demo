@@ -14,8 +14,11 @@ Rainpole is a multi international transportation company obsessed with customer 
 Recent events have caused Rainpole leadership to reasses the current direction of development practices. Four primary initiatives have been identified to improve Rainpole's Cloud Operating Model.
 
 1- Reduce Cloud spend without sacrificing performance
+
 2- Restrict Production changes during peak hours
+
 3- Provide guaranteed way to audit environments (Dev/Prod)
+
 4- Ensure latest security patches are applied
 
 # **Application (FakeService) Explained**
