@@ -1,4 +1,4 @@
-# rainpole-terraform-sentinel-demo
+# **Rainpole-terraform-sentinel-demo**
 Policy As Code using Terraform
 
 
