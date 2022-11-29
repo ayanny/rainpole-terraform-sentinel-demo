@@ -7,7 +7,7 @@ variable "vpccidr" {
 variable "region" {
   description = "AWS region to provision resources"
   type        = string
-  default     = "us-east-2"
+  default     = "ca-central-1"
 }
 
 variable "environment" {
