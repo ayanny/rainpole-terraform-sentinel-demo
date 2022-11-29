@@ -4,6 +4,16 @@ variable "vpccidr" {
   default     = "10.0.0.0/16"
 }
 
+variable "AWS_ACCESS_KEY" {
+  description = "AWS AWS_ACCESS_KEY"
+  type = string
+}
+
+variable "AWS_SECRET_ACCESS_KEY" {
+  description = "AWS SECRET ACCESS KEY"
+  type = string
+}
+
 variable "region" {
   description = "AWS region to provision resources"
   type        = string
