@@ -4,12 +4,12 @@ variable "vpccidr" {
   default     = "10.0.0.0/16"
 }
 
-variable "AWS_ACCESS_KEY" {
+variable "ACCESS_KEY_ID" {
   description = "AWS AWS_ACCESS_KEY"
   type = string
 }
 
-variable "AWS_SECRET_ACCESS_KEY" {
+variable "SECRET_ACCESS_KEY" {
   description = "AWS SECRET ACCESS KEY"
   type = string
 }
