@@ -2,7 +2,7 @@
 Policy As Code using Terraform
 
 
-Amir Yanny's Hashicorp - Senior Solution Engineer Technical Exercise
+Amir Yanny's Hashicorp - Senior Partner Solution Engineer - Technical Exercise
 
 This directory and it's contents were created to demonstrate Policy as Code workflows and enforcements using AWS and Terraform Cloud with Sentinel. The goal of this exercise is to demonstrate how Sentinel policies can enforce best practices like resource tagging, instance sizing and restrict deployment times based on dynamic criteria like tags.
 
