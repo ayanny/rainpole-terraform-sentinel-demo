@@ -109,5 +109,3 @@ resource "aws_key_pair" "ec2_keypair" {
   key_name   = "fakeservicekey"
   public_key = tls_private_key.ssh_key.public_key_openssh
 }
-
-#Checking if this will errorout
