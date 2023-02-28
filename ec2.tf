@@ -1,4 +1,3 @@
-#Retrieve AMI data for EC2 provisioning
 data "aws_ami" "latest-ubuntu" {
   most_recent = true
   owners      = ["099720109477"] # Canonical

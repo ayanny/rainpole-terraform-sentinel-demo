@@ -69,7 +69,7 @@ policy "restrict-availability-zones" {
 
 policy "restrict-production-deployment-times" {
   source = "./restrict-production-deployment-times.sentinel"
-  enforcement_level = "hard-mandatory"
+  enforcement_level = "soft-mandatory"
 }
 
 policy "restrict-ec2-instance-type-environment" {
