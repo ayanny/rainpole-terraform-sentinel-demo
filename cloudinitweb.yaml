@@ -1,5 +1,5 @@
 #cloud-config
-
+#http://18.224.158.142:9090/ui/ 
 ## Option 1 - Full installation using cURL
 package_update: true
 package_upgrade: true
