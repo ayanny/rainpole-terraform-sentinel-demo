@@ -12,7 +12,7 @@ data "aws_ami" "latest-ubuntu" {
     values = ["hvm"]
   }
 }
-
+#
 #Create EC2 instances
 resource "aws_instance" "web" {
   ami                         = data.aws_ami.latest-ubuntu.id
