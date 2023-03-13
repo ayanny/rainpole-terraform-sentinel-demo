@@ -7,7 +7,7 @@ Amir Yanny's Hashicorp - Senior Partner Solution Engineer - Technical Exercise
 This directory and it's contents were created to demonstrate Policy as Code workflows and enforcements using AWS and Terraform Cloud with Sentinel. The goal of this exercise is to demonstrate how Sentinel policies can enforce best practices like resource tagging, instance sizing and restrict deployment times based on dynamic criteria like tags.
 
 
-# **Bussiness Objectives**
+## **Bussiness Objectives**
 
 Rainpole is a multi international transportation company obsessed with customer satisfaction and technical innovation. Rainpole has grown rapidly in the past 12 months with their DevOps team expanding from a single individual to a global team of dozens. During this accelerated growth period Rainpole prioritized innovation and deadlines over best practices.
 
@@ -21,7 +21,7 @@ Recent events have caused Rainpole leadership to reasses the current direction o
 
 4- Ensure latest security patches are applied
 
-# **Application (FakeService) Explained**
+## **Application (FakeService) Explained**
 
 FakeService (https://github.com/nicholasjackson/fake-service) is a customizable solution that demonstrates application dependencies through either HTTP or GRPC connections.
 
@@ -41,11 +41,11 @@ Each tier of FakeService is independently scalable from one another based on a v
 
 Configuration of each instance is performed by cloud-init. See cloudinit"APP".yaml for specific instance configuration parameters.
 
-# **Providers.tf Explained**
+## **Providers.tf Explained**
 
 This defines the providers that will be used and the configuration of those providers. AWS login variables are set as variable sets in Terraform Cloud.
 
-# **ec2.tf Explained**
+## **ec2.tf Explained**
 
 This file first retrieves the most recent AMIs to be used in EC2 provisioning. A group of resource blocks define the type of instances that should be created. Each resource block correlates to a tier in FakeService.
 
@@ -53,19 +53,19 @@ Then an ssh key is created and associated with each instance that will be create
 
 var."APP"instance are set in TFC per workspace as they are specific to the environment and cannot be overridden.
 
-# **iam.tf Explained**
+## **iam.tf Explained**
 
 This file creates a role that will be used to allow SSM connections into AWS instances.
 
-# **security.tf Explained**
+## **security.tf Explained**
 
 This file creates the required security groups inside AWS for FakeService connectivity. Each security group is tailored to only allow the necessary port and CIDR ranges for each tier of the application. Although SSH service is defined it is not used in any resource configurations. This is by design as SSH access is typically only used for troubleshooting purposes.
 
-# **variables.tf Explained**
+## **variables.tf Explained**
 
 Variables to be used in the terraform configuration. Variables environment and "APP"instance are configured in TFC workspaces as they are specific to the workspace they are being deployed in. TFC variables have the highest precedence and will not be overwritten.
 
-# **loadbalancing.tf Explained**
+## **loadbalancing.tf Explained**
 
 Two different types of load balancers are created. First is a public load balancer that will consume a public elastic IP. Secondly are a number of internal load balancers that do not consume EIPs.
 
@@ -75,7 +75,7 @@ Create listeners that correlate to the appropriate port for each tier of FakeSer
 
 Associate instances with target groups
 
-# **networking.tf Explained**
+## **networking.tf Explained**
 
 This file creates the VCN and associated CIDR block that the rest of the networks and resources will consume. A data source retrieves the available AZ's which are used to keep load balancers and instances in the same AZ.
 
@@ -89,15 +89,15 @@ Route tables are defined for Public Networks (Internet Gateway) and Private Netw
 
 Route tables are associated with the appropriate networks depending on gateway type
 
-# **cloudinitconfigs.tf Explained**
+## **cloudinitconfigs.tf Explained**
 
 This file takes the contents of each cloudinit"APP".yaml and then base64 encodes it to be used during instance configuration with cloud-init
 
-# **cloudinit"APP".yaml Explained**
+## **cloudinit"APP".yaml Explained**
 
 These files are specific to the tier of the instance that is being deployed and describes the steps cloud-init should take in order to configure the instances to run their part of FakeServices
 
-# **sentinel-policies Explained**
+## **sentinel-policies Explained**
 
 Policy as Code allows organizations to enforce specific behaviors and best practices in an automated fashion to provide instaneous feedback for developers. This provides a more predictable and secure experience for organizations and developers.
 
@@ -131,7 +131,7 @@ This objective requires two sentinel policies to accomplish. The first policy re
 
 The second policy require-most-recent-AMI-version.sentinel ensures that only the latest version of an AMI is used. In combination with the the previous policy we can ensure that only the latest versions of the official Ubuntu image are used which will include the latest security patches.
 
-# **sentinel.hcl Explained**
+## **sentinel.hcl Explained**
 
 This is the "configuration" file for sentinel policies. Defining a policy in this file will add it to the list of currently enforced policies in the workspace.
 
